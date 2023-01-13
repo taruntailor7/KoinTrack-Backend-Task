@@ -57,13 +57,13 @@ const login = async (req, res) => {
             if(match){
                 let token = jwt.sign({
                     _id : userExists._id,
-                    username: userExists.name,
+                    username: userExists.username,
                     email: userExists.email
                 },JWT_SECRET)
                 return res.send({
                     error:false,
                     message:"User succesfully logged in",
-                    data : token
+                    token : token
                 })
             } else {
                 return res.status(200).send({
