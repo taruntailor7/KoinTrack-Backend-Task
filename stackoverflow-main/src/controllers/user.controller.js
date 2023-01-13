@@ -1,4 +1,5 @@
 const { userModel }  = require("../models/user.model.js")
+
 const register = async (req, res) => {
     try {
         let {email,password} = req.body;
@@ -31,6 +32,16 @@ const register = async (req, res) => {
         });
     }
 }
+const login = async (req, res) => {
+    try {
+        let {email, password} = req.body;
+    } catch (error) {
+        return res.status(500).send({
+            error: error,
+            message: "Something went wrong!"
+        });
+    }
+}
 
-module.exports = register;
+module.exports = {register,login};
 
