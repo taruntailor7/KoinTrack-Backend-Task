@@ -1,7 +1,7 @@
 const { userModel }  = require("../models/user.model.js")
 const register = async (req, res) => {
     try {
-        let {email} = req.body;
+        let {email,password} = req.body;
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if(email.match(mailformat)){
             let userExists = await userModel.findOne({email});
@@ -11,7 +11,7 @@ const register = async (req, res) => {
                     message: 'User already exists.'
                 })
             } else{
-                let newUser = await userModel.create({email});
+                let newUser = await userModel.create({email,password});
                 newUser = newUser.toJSON();
                 return res.send({
                     message: 'User successfully registered',
