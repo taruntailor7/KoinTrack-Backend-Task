@@ -16,6 +16,8 @@ app.get("/", (req, res) => {
   res.send("Stackoverflow");
 })
 
+// app.use(middleware)
+
 app.use("/user", userRouter)
 app.use("/question", quesstionRouter)
 app.use("/answer", answerRouter)
