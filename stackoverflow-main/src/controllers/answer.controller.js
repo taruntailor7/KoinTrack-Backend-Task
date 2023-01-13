@@ -10,7 +10,7 @@ const submitAnswer = async (req, res) => {
         let answerAlreadyExistByUser = question.answers.find((user)=>{
             return user.userId === userId;
         })
-        
+
         if(answerAlreadyExistByUser){
             return res.send({
                 error: true,
@@ -31,9 +31,6 @@ const submitAnswer = async (req, res) => {
             message: "Something went wrong!"
         });
     }
-
-
-
 }
 
 module.exports = {submitAnswer}
