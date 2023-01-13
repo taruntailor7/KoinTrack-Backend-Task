@@ -1,21 +1,36 @@
-const { userModel }  = require("../models/user.model.js")
+const { userModel }  = require("../models/user.model.js");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const register = async (req, res) => {
     try {
-        let {email,password} = req.body;
+        let {username,email,password} = req.body;
         var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         if(email.match(mailformat)){
             let userExists = await userModel.findOne({email});
+            let usernameExist= await userModel.findOne({username});
             if(userExists){
                 return res.status(400).send({
-                    status: false,
-                    message: 'User already exists.'
+                    error: true,
+                    message: 'User already exists!'
+                })
+            } else if(usernameExist){
+                return res.status(400).send({
+                    error: true,
+                    message: 'Username already taken!'
                 })
             } else{
-                let newUser = await userModel.create({email,password});
+                password = bcrypt.hashSync(password);
+                let newUser = await userModel.create({username,email,password});
                 newUser = newUser.toJSON();
+                delete newUser.password;
                 return res.send({
-                    message: 'User successfully registered',
+                    error : false,
+                    message: 'User successfully registered!',
                     data: newUser
                 });
             }
@@ -32,9 +47,36 @@ const register = async (req, res) => {
         });
     }
 }
+
 const login = async (req, res) => {
     try {
-        let {email, password} = req.body;
+        let {username, password} = req.body;
+        let userExists = await userModel.findOne({username});
+        if(userExists){
+            let match = bcrypt.compareSync(password, userExists.password);
+            if(match){
+                let token = jwt.sign({
+                    _id : userExists._id,
+                    username: userExists.name,
+                    email: userExists.email
+                },JWT_SECRET)
+                return res.send({
+                    error:false,
+                    message:"User succesfully logged in",
+                    data : token
+                })
+            } else {
+                return res.status(200).send({
+                    error: true,
+                    message: 'Incorrect password !'
+                })
+            }
+        } else{
+            return res.send({
+                error:true,
+                message: "User does not exist!"
+            })
+        }
     } catch (error) {
         return res.status(500).send({
             error: error,
