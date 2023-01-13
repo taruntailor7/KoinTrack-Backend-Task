@@ -32,7 +32,7 @@ const allQuestions = async (req, res) =>{
     }
 }
 
-const question = async (req, res) =>{
+const readQuestion = async (req, res) =>{
     try {
         let {_id} = req.params;
         let question  = await questionModel.findById({_id});
@@ -49,4 +49,4 @@ const question = async (req, res) =>{
         });
     }
 }
-module.exports = {askQuestion,allQuestions, question}
+module.exports = {askQuestion,allQuestions, readQuestion}
