@@ -77,4 +77,20 @@ const updateQuestion = async (req, res) =>{
         });
     }
 }
-module.exports = {askQuestion, allQuestions, readQuestion, updateQuestion}
+
+const searchQuestion = async (req, res) =>{
+    try {
+        let title = req.query.q;
+        let question = await questionModel.find({ question:{$regex:title,$options:"$i"} })
+        return res.send({
+            error:false,
+            data:question
+        })
+    } catch (error) {
+        return res.status(500).send({
+            error: error,
+            message: "Something went wrong!"
+        });
+    }
+}
+module.exports = {askQuestion, allQuestions, readQuestion, updateQuestion, searchQuestion}
